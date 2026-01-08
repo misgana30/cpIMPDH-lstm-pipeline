@@ -15,9 +15,7 @@ pip install -r requirements.txt
 python scripts/pretrain.py   --smiles_txt ro5_fil_smiles.txt   --outdir outputs_pretrain   --max_len 181   --epochs 50
 ```
 
-Outputs:
-- `outputs_pretrain/best_pretrained.h5`
-- `outputs_pretrain/vocab.json`
+
 
 ## 2) Fine-tune (FULL FT or Disc-LR)
 ```bash

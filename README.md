@@ -35,5 +35,3 @@ python scripts/generate.py   --model outputs_finetune_full/best_finetuned_full_f
 
 
 
-## License
-MIT (edit if you prefer)

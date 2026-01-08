@@ -1,6 +1,6 @@
 # cpIMPDH SMILES LSTM Pipeline (Pretrain + Fine-tune)
 
-A reproducible, reviewer-friendly codebase for:
+A reproducible codebase for:
 1. **Pretraining** a character-level LSTM on large SMILES corpora
 2. **Fine-tuning** on cpIMPDH-focused compounds using:
    - **FULL FT** (full unfreeze, low learning rate)

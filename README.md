@@ -1,11 +1,6 @@
-# cpIMPDH SMILES LSTM Pipeline (Pretrain + Fine-tune)
+# AI Driven Focused Library Design: Fine Tuning LSTM Models for the generation of Novel Cryptosporidium parvum Inosine 5’ Monophosphate Dehydrogenase inhibitors
 
-A reproducible codebase for:
-1. **Pretraining** a character-level LSTM on large SMILES corpora
-2. **Fine-tuning** on cpIMPDH-focused compounds using:
-   - **FULL FT** (full unfreeze, low learning rate)
-   - **Disc-LR** (discriminative learning rates)
-3. **Generation** of new SMILES + basic RDKit evaluation
+
 
 ## Folder structure
 - `cpimpdh/` : reusable modules (tokenizer, model, training, fine-tuning, metrics)

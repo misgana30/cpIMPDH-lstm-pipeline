@@ -2,11 +2,6 @@
 
 
 
-## Folder structure
-- `cpimpdh/` : reusable modules (tokenizer, model, training, fine-tuning, metrics)
-- `scripts/` : command-line entry points
-- `notebooks/` : optional (keep demo notebooks only)
-
 ## Install
 ```bash
 pip install -r requirements.txt

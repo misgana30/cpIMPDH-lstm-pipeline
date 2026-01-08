@@ -33,9 +33,7 @@ python scripts/finetune.py   --pretrained outputs_pretrain/best_pretrained.h5   
 python scripts/generate.py   --model outputs_finetune_full/best_finetuned_full_ft.h5   --vocab outputs_finetune_full/vocab.json   --n 10000   --temperature 0.7   --out gen.csv
 ```
 
-## Notes
-- This repo is **Open-Source-tool friendly** (no Schrödinger-specific code).
-- Keep large datasets and trained weights out of Git history (`.gitignore` already helps).
+
 
 ## License
 MIT (edit if you prefer)

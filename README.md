@@ -1,4 +1,4 @@
-# cpIMPDH SMILES LSTM Pipeline (Pretrain + Fine-tune)
+# cpIMPDH SMILES LSTM Pipeline 
 
 
 ## Install

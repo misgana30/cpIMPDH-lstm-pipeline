@@ -14,9 +14,7 @@ pip install -r requirements.txt
 python scripts/pretrain.py   --smiles_txt datasets/chembl_ro5_smiles.txt   --outdir outputs_pretrain   --max_len 181   --epochs 50
 ```
 
-Outputs:
-- `outputs_pretrain/best_pretrained.h5`
-- `outputs_pretrain/vocab.json`
+
 
 ## 2) Fine-tune (FULL FT or Disc-LR)
 ```bash
@@ -32,9 +30,4 @@ python scripts/finetune.py   --pretrained outputs_pretrain/best_pretrained.h5   
 python scripts/generate.py   --model Models/Full_FT.h5   --vocab outputs_finetune_full/vocab.json   --n 10000   --temperature 0.7   --out gen.csv
 ```
 
-## Notes
-- This repo is **Open-Source-tool friendly** (no Schrödinger-specific code).
-- Keep large datasets and trained weights out of Git history (`.gitignore` already helps).
 
-## License
-MIT (edit if you prefer)

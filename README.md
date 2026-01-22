@@ -1,16 +1,5 @@
 # cpIMPDH SMILES LSTM Pipeline (Pretrain + Fine-tune)
 
-A reproducible, reviewer-friendly codebase for:
-1. **Pretraining** a character-level LSTM on large SMILES corpora
-2. **Fine-tuning** on cpIMPDH-focused compounds using:
-   - **FULL FT** (full unfreeze, low learning rate)
-   - **Disc-LR** (discriminative learning rates)
-3. **Generation** of new SMILES + basic RDKit evaluation
-
-## Folder structure
-- `cpimpdh/` : reusable modules (tokenizer, model, training, fine-tuning, metrics)
-- `scripts/` : command-line entry points
-- `notebooks/` : optional (keep demo notebooks only)
 
 ## Install
 ```bash

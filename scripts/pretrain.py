@@ -27,7 +27,14 @@ def main():
 
     os.makedirs(args.outdir, exist_ok=True)
 
-    smiles = load_smiles_txt(args.smiles_txt)
+    if not os.path.exists(args.smiles_txt):
+        raise SystemExit(f"Error: Input file not found: {args.smiles_txt}")
+
+    try:
+        smiles = load_smiles_txt(args.smiles_txt)
+    except Exception as e:
+        raise SystemExit(f"Error loading SMILES file: {e}")
+
     if not smiles:
         raise SystemExit("No SMILES found in input file.")
 
@@ -42,7 +49,7 @@ def main():
 
     # Model
     model = build_pretrained_lstm(
-        vocab_size=tok.vocab_size(),
+        vocab_size=tok.vocab_size,  # Property, not method
         max_len=args.max_len - 1,  # X length (teacher forcing)
         embedding_dim=args.embedding_dim,
         lstm_units=args.lstm_units,

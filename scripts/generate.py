@@ -18,8 +18,20 @@ def main():
     ap.add_argument("--out", default="generated_smiles.csv")
     args = ap.parse_args()
 
-    tok = SmilesCharTokenizer.from_json(args.vocab)
-    model = tf.keras.models.load_model(args.model, compile=False)
+    if not os.path.exists(args.model):
+        raise SystemExit(f"Error: Model file not found: {args.model}")
+    if not os.path.exists(args.vocab):
+        raise SystemExit(f"Error: Vocab file not found: {args.vocab}")
+
+    try:
+        tok = SmilesCharTokenizer.from_json(args.vocab)
+    except Exception as e:
+        raise SystemExit(f"Error loading tokenizer: {e}")
+
+    try:
+        model = tf.keras.models.load_model(args.model, compile=False)
+    except Exception as e:
+        raise SystemExit(f"Error loading model: {e}")
 
     L = int(model.input_shape[1])
     smiles = generate_many(model, tok, n=args.n, max_len=L, temperature=args.temperature)

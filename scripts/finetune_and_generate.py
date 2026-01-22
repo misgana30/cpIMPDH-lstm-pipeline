@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
-"""
-CLI: fine-tune a pretrained Keras SMILES model on a cpIMPDH-focused SMILES list and generate a library.
 
-Example:
-python scripts/finetune_and_generate.py \
-  --pretrained best_march.h5 \
-  --finetune_smiles augmented_smiles_only.csv \
-  --outdir generated \
-  --strategy disc_lr \
-  --n 10000 \
-  --temperature 0.6 \
-  --max_len 181
-"""
 from __future__ import annotations
 
 import argparse, os, json
@@ -45,23 +33,61 @@ def main():
     ap.add_argument("--max_len", type=int, default=181)
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--save_model", action="store_true")
+    ap.add_argument("--epochs", type=int, default=8, help="Number of epochs for fine-tuning")
+    ap.add_argument("--batch_size", type=int, default=64, help="Batch size for fine-tuning")
     args = ap.parse_args()
 
     os.makedirs(args.outdir, exist_ok=True)
 
-    pretrained = tf.keras.models.load_model(args.pretrained, compile=False)
+    if not os.path.exists(args.pretrained):
+        raise SystemExit(f"Error: Pretrained model not found: {args.pretrained}")
+    if not os.path.exists(args.finetune_smiles):
+        raise SystemExit(f"Error: Fine-tuning SMILES file not found: {args.finetune_smiles}")
 
-    ft_smiles = load_smiles(args.finetune_smiles)
+    try:
+        pretrained = tf.keras.models.load_model(args.pretrained, compile=False)
+    except Exception as e:
+        raise SystemExit(f"Error loading pretrained model: {e}")
+
+    try:
+        ft_smiles = load_smiles(args.finetune_smiles)
+    except Exception as e:
+        raise SystemExit(f"Error loading fine-tuning SMILES: {e}")
+
+    if not ft_smiles:
+        raise SystemExit("No SMILES found for fine-tuning.")
     tokenizer = SmilesCharTokenizer.from_smiles(ft_smiles)
 
+    # Encode SMILES - model expects input length of max_len-1 (teacher forcing)
+    # So we encode to max_len, then split: X = [:-1], y = [1:]
     encoded = tokenizer.encode_many(ft_smiles, args.max_len)
     X_ft, y_ft = encoded[:, :-1], encoded[:, 1:]
+    
+    # Verify model input shape matches
+    expected_input_len = int(pretrained.input_shape[1])
+    if X_ft.shape[1] != expected_input_len:
+        raise ValueError(
+            f"Model expects input length {expected_input_len}, but got {X_ft.shape[1]}. "
+            f"Adjust --max_len to {expected_input_len + 1}"
+        )
 
     if args.strategy == "full":
-        res = finetune_full_unfreeze(pretrained, X_ft, y_ft)
+        res = finetune_full_unfreeze(
+            pretrained=pretrained,
+            X_ft=X_ft,
+            y_ft=y_ft,
+            epochs=args.epochs,
+            batch_size=args.batch_size,
+        )
         tag = "full_unfreeze"
     else:
-        res = finetune_discriminative_lr(pretrained, X_ft, y_ft)
+        res = finetune_discriminative_lr(
+            pretrained=pretrained,
+            X_ft=X_ft,
+            y_ft=y_ft,
+            epochs=args.epochs,
+            batch_size=args.batch_size,
+        )
         tag = "disc_lr"
 
     model = res.model
@@ -69,7 +95,9 @@ def main():
     if args.save_model:
         model.save(os.path.join(args.outdir, f"{tag}.h5"))
 
-    L = int(model.input_shape[1])
+    # Model input length is max_len-1, so generation max_len should be max_len-1+1 = max_len
+    # But generation function expects the full sequence length including special tokens
+    L = int(model.input_shape[1]) + 1  # Add 1 because generation needs full sequence length
     gen = generate_many(model, tokenizer, n=args.n, max_len=L, temperature=args.temperature, seed=args.seed)
     out_smi = os.path.join(args.outdir, f"{tag}_T{args.temperature}.smi")
     with open(out_smi, "w", encoding="utf-8") as f:

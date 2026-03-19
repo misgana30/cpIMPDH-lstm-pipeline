@@ -1,4 +1,4 @@
-# cpIMPDH SMILES LSTM Pipeline 
+# cpIMPDH focused library design  
 
 ![graphical_abastract](https://github.com/user-attachments/assets/aa214ed1-60de-48ba-b6ef-f46fba2f2e77)
 

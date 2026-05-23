@@ -212,7 +212,7 @@ Generated molecules are evaluated on:
 
 ---
 
-## 🔬 QSAR Models
+## 🔬 Predictive Models
 
 Built-in regression models for pIC50 prediction:
 

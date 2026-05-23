@@ -49,25 +49,24 @@ def main():
 
     # Model
     model = build_pretrained_lstm(
-        vocab_size=tok.vocab_size,  # Property, not method
-        max_len=args.max_len - 1,  # X length (teacher forcing)
+        vocab_size=tok.vocab_size,
+        max_len=args.max_len,
         embedding_dim=args.embedding_dim,
         lstm_units=args.lstm_units,
         dropout_rate=args.dropout,
     )
     model = compile_model(model, learning_rate=args.lr)
 
-    # Callback (optional)
-    cb = SmilesGenerationCallback(tok, max_len=args.max_len, temps=[args.callback_temp], num_samples=args.callback_samples)
+    # Generation callback — use model input shape to match generation code
+    cb = SmilesGenerationCallback(tok, max_len=model.input_shape[1], temps=[args.callback_temp], num_samples=args.callback_samples)
 
     best_path = os.path.join(args.outdir, "best_pretrained.h5")
     history = fit(
-        model,
-        x, y,
-        out_path=best_path,
+        model, x, y,
+        out_model_path=best_path,
         batch_size=args.batch_size,
         epochs=args.epochs,
-        callbacks=[cb],
+        extra_callbacks=[cb],
     )
 
     print(f"Saved best model to: {best_path}")

@@ -8,6 +8,7 @@ import tensorflow as tf
 from cpimpdh.tokenizer import SmilesCharTokenizer
 from cpimpdh.data import load_smiles_txt, encode_smiles, make_xy
 from cpimpdh.finetune import finetune_full_unfreeze, finetune_discriminative_lr
+from cpimpdh.model import load_pretrained
 
 def main():
     ap = argparse.ArgumentParser()
@@ -53,7 +54,7 @@ def main():
         raise SystemExit(f"Error creating tokenizer: {e}")
 
     try:
-        model = tf.keras.models.load_model(args.pretrained, compile=False)
+        model = load_pretrained(args.pretrained)
     except Exception as e:
         raise SystemExit(f"Error loading pretrained model: {e}")
 

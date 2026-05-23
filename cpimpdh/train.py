@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, List
 import tensorflow as tf
-from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
+from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping, Callback
 
 def compile_model(model, learning_rate: float = 1e-3):
     opt = tf.keras.optimizers.Adam(learning_rate=learning_rate)
@@ -16,7 +16,10 @@ def make_callbacks(out_model_path: str, patience: int = 5):
     ]
 
 def fit(model, x, y, batch_size: int = 256, epochs: int = 30, validation_split: float = 0.1,
-        out_model_path: str = "best_model.h5", patience: int = 5):
+        out_model_path: str = "best_model.h5", patience: int = 5,
+        extra_callbacks: Optional[List[Callback]] = None):
     cb = make_callbacks(out_model_path=out_model_path, patience=patience)
+    if extra_callbacks:
+        cb = cb + list(extra_callbacks)
     hist = model.fit(x, y, batch_size=batch_size, epochs=epochs, validation_split=validation_split, callbacks=cb)
     return hist

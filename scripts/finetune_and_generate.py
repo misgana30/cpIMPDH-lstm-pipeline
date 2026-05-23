@@ -10,6 +10,7 @@ from cpimpdh.tokenizer import SmilesCharTokenizer
 from cpimpdh.finetune import finetune_full_unfreeze, finetune_discriminative_lr
 from cpimpdh.generation import generate_many
 from cpimpdh.metrics import calc_metrics, morgan_fp
+from cpimpdh.model import load_pretrained
 
 
 def load_smiles(path: str):
@@ -45,7 +46,7 @@ def main():
         raise SystemExit(f"Error: Fine-tuning SMILES file not found: {args.finetune_smiles}")
 
     try:
-        pretrained = tf.keras.models.load_model(args.pretrained, compile=False)
+        pretrained = load_pretrained(args.pretrained)
     except Exception as e:
         raise SystemExit(f"Error loading pretrained model: {e}")
 
@@ -95,9 +96,7 @@ def main():
     if args.save_model:
         model.save(os.path.join(args.outdir, f"{tag}.h5"))
 
-    # Model input length is max_len-1, so generation max_len should be max_len-1+1 = max_len
-    # But generation function expects the full sequence length including special tokens
-    L = int(model.input_shape[1]) + 1  # Add 1 because generation needs full sequence length
+    L = int(model.input_shape[1])
     gen = generate_many(model, tokenizer, n=args.n, max_len=L, temperature=args.temperature, seed=args.seed)
     out_smi = os.path.join(args.outdir, f"{tag}_T{args.temperature}.smi")
     with open(out_smi, "w", encoding="utf-8") as f:

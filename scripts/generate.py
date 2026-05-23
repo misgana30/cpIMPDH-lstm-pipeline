@@ -7,6 +7,7 @@ import tensorflow as tf
 
 from cpimpdh.tokenizer import SmilesCharTokenizer
 from cpimpdh.generation import generate_many
+from cpimpdh.model import load_pretrained
 
 def main():
     ap = argparse.ArgumentParser()
@@ -29,7 +30,7 @@ def main():
         raise SystemExit(f"Error loading tokenizer: {e}")
 
     try:
-        model = tf.keras.models.load_model(args.model, compile=False)
+        model = load_pretrained(args.model)
     except Exception as e:
         raise SystemExit(f"Error loading model: {e}")
 

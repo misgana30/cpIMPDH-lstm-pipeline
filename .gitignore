@@ -9,3 +9,6 @@ generated/
 *.h5
 *.pkl
 *.log
+build/
+*.egg-info/
+test_output/

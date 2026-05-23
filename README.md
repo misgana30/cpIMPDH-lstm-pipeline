@@ -227,17 +227,7 @@ Featurization uses **Morgan fingerprints** (radius=2, 2048 bits) with optional *
 
 ---
 
-## 📝 Citation
 
-If you use this pipeline in your research, please cite:
-
-```bibtex
-@software{misgana2025cpimpdh,
-  author = {Misgana},
-  title = {cpIMPDH-LSTM Pipeline: De novo molecular generation for Cryptosporidium parvum IMPDH inhibitors},
-  year = {2025},
-  url = {https://github.com/misgana30/cpIMPDH-lstm-pipeline}
-}
 ```
 
 ---

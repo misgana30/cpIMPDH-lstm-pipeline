@@ -2,7 +2,7 @@
   
   # 🧬 cpIMPDH-LSTM Pipeline
   
-  **End-to-end de novo molecular generation and focused library design for *Cryptosporidium parvum* IMPDH inhibitors**
+  **de novo molecular generation and focused library design for *Cryptosporidium parvum* IMPDH inhibitors**
 
   [![Python](https://img.shields.io/badge/Python-3.9%2B-3670A0?style=flat-square&logo=python&logoColor=ffdd54)](https://python.org)
   [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-%23FF6F00?style=flat-square&logo=TensorFlow)](https://tensorflow.org)
@@ -16,7 +16,7 @@
 
 ## 📋 Overview
 
-This pipeline provides a complete workflow for **target-specific drug discovery** using recurrent neural networks. It combines **pretrained language models** for molecular generation with **transfer learning** and **QSAR modeling** to design novel inhibitors of *Cryptosporidium parvum* inosine-5′-monophosphate dehydrogenase (cpIMPDH).
+This pipeline provides a complete workflow for **target-specific drug discovery** using recurrent neural networks. It combines **pretrained language models** for molecular generation with **transfer learning** and **machine learning bioactivity prediction** to design focused library for *Cryptosporidium parvum* inosine-5′-monophosphate dehydrogenase (cpIMPDH).
 
 **Key capabilities:**
 - **Character-level LSTM** for SMILES generation (2-layer bidirectional architecture)
@@ -28,21 +28,7 @@ This pipeline provides a complete workflow for **target-specific drug discovery*
 
 ---
 
-## 🏗️ Pipeline Architecture
 
-```
-┌─────────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│  Pretrain on     │────▶│  Fine-tune on    │────▶│  Generate novel   │
-│  ChEMBL SMILES   │     │  Target SMILES   │     │  Molecular SMILES │
-└─────────────────┘     └──────────────────┘     └──────────────────┘
-                                                          │
-                                                          ▼
-┌─────────────────┐     ┌──────────────────┐     ┌──────────────────┐
-│  QSAR / pIC50   │◀────│  Molecular       │◀────│  Filter & Score   │
-│  Prediction     │     │  Metrics (QED,   │     │  Generated        │
-│                  │     │  logP, SA, etc.) │     │  Molecules        │
-└─────────────────┘     └──────────────────┘     └──────────────────┘
-```
 
 ---
 
@@ -186,7 +172,7 @@ cpIMPDH-lstm-pipeline/
 │   ├── generation.py           # Temperature-controlled SMILES generation
 │   ├── metrics.py              # Molecular property calculations
 │   ├── finetune.py             # Transfer learning strategies
-│   ├── qsar.py                 # QSAR regression benchmarking
+│   ├── qsar.py                 #  regression benchmarking
 │   └── callbacks.py            # Training callbacks (generation monitor)
 ├── scripts/
 │   ├── pretrain.py             # Pretraining on large SMILES corpus

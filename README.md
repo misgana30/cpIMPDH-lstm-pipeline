@@ -65,7 +65,7 @@ pip install git+https://github.com/misgana30/cpIMPDH-lstm-pipeline.git
 | Package | Minimum Version |
 |---------|----------------|
 | Python | ≥ 3.9 |
-| TensorFlow | ≥ 2.16.0 |
+| TensorFlow | ≥ 2.15.0 |
 | RDKit | 2024+ |
 | scikit-learn | ≥ 1.0 |
 | NumPy | < 2 |

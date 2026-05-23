@@ -2,7 +2,7 @@
   
   # 🧬 cpIMPDH-LSTM Pipeline
   
-  **End-to-end de novo molecular generation and QSAR modeling for *Cryptosporidium parvum* IMPDH inhibitors**
+  **End-to-end de novo molecular generation and focused library design for *Cryptosporidium parvum* IMPDH inhibitors**
 
   [![Python](https://img.shields.io/badge/Python-3.9%2B-3670A0?style=flat-square&logo=python&logoColor=ffdd54)](https://python.org)
   [![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-%23FF6F00?style=flat-square&logo=TensorFlow)](https://tensorflow.org)

@@ -23,7 +23,7 @@ This pipeline provides a complete workflow for **target-specific drug discovery*
 - **Transfer learning** via full fine-tuning or discriminative layer-wise learning rates
 - **De novo SMILES generation** with temperature-controlled sampling
 - **Comprehensive molecular metrics** (validity, uniqueness, novelty, QED, logP, SA score)
-- **QSAR benchmarking** with multiple regression models (RF, SVR, GBR, Linear)
+- **bioactivity benchmarking** with multiple regression models (RF, SVR, GBR, Linear)
 - **pIC50 prediction** for generated compounds
 
 ---

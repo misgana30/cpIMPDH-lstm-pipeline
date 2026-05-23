@@ -4,6 +4,6 @@ tqdm
 matplotlib
 scikit-learn
 rdkit
-tensorflow>=2.16.0
+tensorflow>=2.15.0
 joblib
 h5py

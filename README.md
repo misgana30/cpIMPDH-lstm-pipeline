@@ -215,12 +215,7 @@ Built-in regression models for pIC50 prediction:
 
 Featurization uses **Morgan fingerprints** (radius=2, 2048 bits) with optional **standard scaling**.
 
----
 
-
-```
-
----
 
 ## 📄 License
 

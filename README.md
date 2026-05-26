@@ -219,4 +219,4 @@ Featurization uses **Morgan fingerprints** (radius=2, 2048 bits) with optional *
 
 ## 📄 License
 
-This project is licensed under the [CC0-1.0 License](LICENSE) (public domain dedication).
+This project is licensed under the [CC0-1.0 License](LICENSE) 

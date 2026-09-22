@@ -141,11 +141,7 @@ generated = generate_many(model, tokenizer, n=1000, max_len=model.input_shape[1]
 metrics = calc_metrics(generated)
 print(metrics)
 
-# QSAR benchmarking
-from cpimpdh.qsar import load_augmented_smiles_pic50_txt
-smiles_qsar, pIC50 = load_augmented_smiles_pic50_txt("datasets/augmented_smiles_with_pic50.txt")
-result = benchmark_regressors(smiles_qsar, pIC50)
-print(f"Best model: {result.best_model_name}")
+
 ```
 
 ---
@@ -202,16 +198,7 @@ Generated molecules are evaluated on:
 
 ---
 
-## 🔬 Predictive Models
 
-Built-in regression models for pIC50 prediction:
-
-| Model | Kernel / Params |
-|-------|----------------|
-| Linear Regression | Ordinary least squares |
-| SVR (RBF) | Support vector regression |
-| Random Forest | 100 estimators |
-| Gradient Boosting | 100 estimators, lr=0.1 |
 
 Featurization uses **Morgan fingerprints** (radius=2, 2048 bits) with optional **standard scaling**.
 

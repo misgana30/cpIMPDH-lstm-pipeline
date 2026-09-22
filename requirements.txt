@@ -3,7 +3,9 @@ pandas
 tqdm
 matplotlib
 scikit-learn
+scipy
 rdkit
 tensorflow>=2.15.0
 joblib
 h5py
+shap  # optional: only needed for cpimpdh.qsar.shap_permutation_importance

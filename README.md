@@ -44,12 +44,14 @@ pip install git+https://github.com/misgana30/cpIMPDH-lstm-pipeline.git
 | TensorFlow | ≥ 2.15.0 |
 | RDKit | 2024+ |
 | scikit-learn | ≥ 1.0 |
+| SciPy | ≥ 1.7 |
 | NumPy | < 2 |
 | Pandas | ≥ 1.0 |
 | Matplotlib | ≥ 3.0 |
 | Joblib | ≥ 1.0 |
 | tqdm | ≥ 4.0 |
 | h5py | ≥ 3.0 |
+| shap | ≥ 0.44 (optional, for QSAR model interpretation) |
 
 ---
 
@@ -121,7 +123,6 @@ from cpimpdh.data import load_smiles_txt, encode_smiles, make_xy
 from cpimpdh.train import compile_model, fit
 from cpimpdh.generation import generate_many
 from cpimpdh.metrics import calc_metrics
-from cpimpdh.qsar import benchmark_regressors, predict_pic50
 
 # Load and tokenize SMILES
 smiles = load_smiles_txt("datasets/chembl_ro5_smiles.txt")
@@ -146,6 +147,74 @@ print(metrics)
 
 ---
 
+## 🎯 QSAR modeling (bioactivity prediction)
+
+The bioactivity model is trained on the **236 unique** fine-tuning compounds only
+(`datasets/finetune_IMPDH_with_chembl_id.csv`) — **not** on SMILES-augmented data,
+since different SMILES of the same molecule collapse to the same Morgan
+fingerprint and would leak across any split. Compounds are split by
+**Bemis–Murcko scaffold** (never randomly), and the pipeline reports
+scaffold-grouped cross-validation, a y-scrambling control, and an
+applicability domain, in addition to the held-out test metrics.
+
+```python
+import numpy as np
+import pandas as pd
+
+from cpimpdh.qsar import (
+    load_smiles_pic50_txt,
+    benchmark_regressors,
+    print_table1,
+    y_scrambling_test,
+    applicability_domain_cutoff,
+    evaluate_applicability_domain,
+    shap_permutation_importance,
+    smiles_list_to_fps,
+)
+
+# The CSV stores raw IC50 (nM); convert to pIC50 = 9 - log10(IC50) first.
+df = pd.read_csv("datasets/finetune_IMPDH_with_chembl_id.csv")
+smiles = df["smiles"].tolist()
+pic50 = (9 - np.log10(df["IC50 value"])).to_numpy()
+
+# Scaffold split + 4-model benchmark (Linear Regression, SVR, RF, Gradient Boosting)
+bench = benchmark_regressors(smiles, pic50)
+print_table1(bench)  # test R2/MAE, scaffold-grouped CV R2/MAE, Spearman rho per model
+
+# Y-scrambling control on the selected model (SVR)
+svr_fit = bench.results["Support Vector Regression (RBF)"]
+train_scaffolds = [bench.scaffolds[i] for i in bench.train_idx]
+scaffold_to_id = {sc: gid for gid, sc in enumerate(sorted(set(train_scaffolds)))}
+train_groups = np.asarray([scaffold_to_id[sc] for sc in train_scaffolds])
+ys = y_scrambling_test(svr_fit.model, bench.X_train, bench.y_train, train_groups)
+print(ys)  # observed_cv_r2 vs scrambled_cv_r2_mean/max, p_value
+
+# Applicability domain: cutoff derived from the training set, then applied to the test set
+cutoff = applicability_domain_cutoff(bench.X_train, train_scaffolds)
+sims, in_domain = evaluate_applicability_domain(bench.X_test, bench.X_train, cutoff)
+print(f"AD cutoff={cutoff:.3f}, in-domain={in_domain.mean():.1%}")
+
+# Permutation SHAP (optional; requires `pip install shap`, and is slow on 2048-bit fingerprints)
+X_all, _ = smiles_list_to_fps(smiles)
+if bench.scaler is not None:
+    X_all = bench.scaler.transform(X_all)
+shap_res = shap_permutation_importance(svr_fit.model, X_all)
+print(shap_res["top_features"][:10])
+```
+
+The same workflow is available from the command line:
+
+```bash
+python -m cpimpdh.qsar datasets/finetune_pic50.txt --plot comparison.png --shap
+```
+
+(`finetune_pic50.txt` is a two-column, whitespace-separated `SMILES pIC50` file
+you derive once from the CSV above with `load_smiles_pic50_txt`/a small export
+script — this repo does not ship a pre-augmented pIC50 file, deliberately, so
+there is no risk of accidentally training on augmented/leaked data.)
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -158,7 +227,7 @@ cpIMPDH-lstm-pipeline/
 │   ├── generation.py           # Temperature-controlled SMILES generation
 │   ├── metrics.py              # Molecular property calculations
 │   ├── finetune.py             # Transfer learning strategies
-│   ├── qsar.py                 #  regression benchmarking
+│   ├── qsar.py                 # scaffold-split QSAR: benchmark, CV, y-scrambling, AD, SHAP
 │   └── callbacks.py            # Training callbacks (generation monitor)
 ├── scripts/
 │   ├── pretrain.py             # Pretraining on large SMILES corpus
@@ -167,9 +236,9 @@ cpIMPDH-lstm-pipeline/
 │   └── finetune_and_generate.py# Combined fine-tune + generation pipeline
 ├── datasets/
 │   ├── chembl_ro5_smiles.txt   # ~1,200 ChEMBL Rule-of-5 SMILES (pretrain)
-│   ├── finetune_impdh.txt      # ~236 cpIMPDH-targeted SMILES (fine-tune)
-│   ├── augmented_smiles_with_pic50.txt  # 704 augmented SMILES + pIC50 values
-│   └── finetune_IMPDH_with_chembl_id.csv # cpIMPDH compounds with ChEMBL IDs
+│   ├── finetune_impdh.txt      # 236 unique cpIMPDH-targeted SMILES, one per line (LSTM fine-tuning)
+│   └── finetune_IMPDH_with_chembl_id.csv # the same 236 compounds with ChEMBL IDs and raw IC50 (nM);
+│                                          # convert IC50 (nM) to pIC50 via pIC50 = 9 - log10(IC50) for QSAR use
 ├── Models/
 │   ├── chembl_pretrained.h5    # Pretrained ChEMBL model (vocab: 50)
 │   ├── DiscLR.h5               # Discriminative LR fine-tuned model

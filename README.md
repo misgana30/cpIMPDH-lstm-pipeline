@@ -74,7 +74,7 @@ python scripts/pretrain.py \
 ```bash
 python scripts/finetune.py \
   --pretrained Models/chembl_pretrained.h5 \
-  --finetune_smiles datasets/finetune_impdh.txt \
+  --finetune_smiles datasets/IMPDH_augmented_smiles_only.txt \
   --outdir outputs_finetune \
   --max_len 181 \
   --strategy full_ft \
@@ -104,7 +104,7 @@ python scripts/generate.py \
 ```bash
 python scripts/finetune_and_generate.py \
   --pretrained Models/chembl_pretrained.h5 \
-  --finetune_smiles datasets/finetune_impdh.txt \
+  --finetune_smiles datasets/IMPDH_augmented_smiles_only.txt \
   --outdir generated \
   --strategy disc_lr \
   --n 10000 \
@@ -183,9 +183,9 @@ cpIMPDH-lstm-pipeline/
 │   └── finetune_and_generate.py# Combined fine-tune + generation pipeline
 ├── datasets/
 │   ├── chembl_ro5_smiles.txt   # ~1,200 ChEMBL Rule-of-5 SMILES (pretrain)
-│   ├── finetune_impdh.txt      # 236 unique cpIMPDH-targeted SMILES, one per line (LSTM fine-tuning)
+│   ├── IMPDH_augmented_smiles_only.txt      # Augmented 236 unique cpIMPDH-targeted SMILES (for LSTM fine-tuning only)
 │   └── finetune_IMPDH_with_chembl_id.csv # the same 236 compounds with ChEMBL IDs and raw IC50 (nM);
-│                                          # convert IC50 (nM) to pIC50 via pIC50 = 9 - log10(IC50) for QSAR use
+│                                          
 ├── Models/
 │   ├── chembl_pretrained.h5    # Pretrained ChEMBL model (vocab: 50)
 │   ├── DiscLR.h5               # Discriminative LR fine-tuned model

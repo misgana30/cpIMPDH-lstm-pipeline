@@ -226,6 +226,7 @@ This project is licensed under the [CC0-1.0 License](LICENSE)
 
 ## Cite
 If you use the code or one of the models in your research, please cite the following paper:
+~~~
 @article{cpIMPDH-lstm,
   author = {Misgana Mengistu Asmare, Daniel Muanguzi, Soon-Il Yun},
   title = {Target-Focused Library Design for Cryptosporidium parvum IMPDH Using LSTM Generative Models and Pareto Optimization},
@@ -233,3 +234,4 @@ If you use the code or one of the models in your research, please cite the follo
   doi = { 10.1021/acsomega.6c06687},
   journal = {ACS Omega}
 }
+~~~
